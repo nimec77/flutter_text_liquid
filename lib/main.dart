@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_text_liquid/asset_to_image.dart';
 import 'package:flutter_text_liquid/text_liquid_fill.dart';
 
 void main() {
@@ -19,8 +20,8 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: SizedBox(
             width: 600,
-            height: 250,
-            child: TextLiquidFill(text: 'LIQUIDY'),
+            height: 450,
+            child: AssetToImage(),
           ),
         ),
       ),
