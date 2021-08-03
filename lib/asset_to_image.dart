@@ -31,9 +31,11 @@ class _AssetToImageState extends State<AssetToImage> {
   }
 
   void _updateImage(ImageInfo imageInfo, bool synchronousCall) {
-    _imageInfo?.dispose();
-    _imageInfo = imageInfo;
-    debugPrint('${imageInfo.image.width}x${imageInfo.image.height}');
+    setState(() {
+      _imageInfo?.dispose();
+      _imageInfo = imageInfo;
+      debugPrint('${imageInfo.image.width}x${imageInfo.image.height}');
+    });
   }
 
   @override
