@@ -11,7 +11,7 @@ class TextLiquidFill extends StatefulWidget {
     required this.text,
     this.textStyle = const TextStyle(fontSize: 140, fontWeight: FontWeight.bold),
     this.textAlign = TextAlign.center,
-    this.loadDuration = const Duration(seconds: 6),
+    this.loadDuration = const Duration(seconds: 10),
     this.waveDuration = const Duration(seconds: 2),
     this.decoration = const BoxDecoration(color: Colors.red),
     this.waveColor = Colors.blueAccent,
@@ -83,6 +83,7 @@ class _TextLiquidFillState extends State<TextLiquidFill> with TickerProviderStat
                 waveValue: _waveController.value,
                 loadValue: _loadController.value,
                 waveColor: widget.waveColor,
+                renderBox: context.findRenderObject() as RenderBox?,
               ),
             ),
           ),
@@ -95,8 +96,8 @@ class _TextLiquidFillState extends State<TextLiquidFill> with TickerProviderStat
             }
             return ImageShader(
               _image!,
-              TileMode.clamp,
-              TileMode.clamp,
+              TileMode.repeated,
+              TileMode.repeated,
               Matrix4.identity().storage,
             );
           },
@@ -112,6 +113,17 @@ class _TextLiquidFillState extends State<TextLiquidFill> with TickerProviderStat
             ),
           ),
         ),
+        // Container(
+        //   color: Colors.transparent,
+        //   child: Center(
+        //     child: Text(
+        //       widget.text,
+        //       key: _textKey,
+        //       style: widget.textStyle,
+        //       textAlign: widget.textAlign,
+        //     ),
+        //   ),
+        // )
       ],
     );
   }
@@ -132,31 +144,37 @@ class _WavePainter extends CustomPainter {
     required this.waveValue,
     required this.loadValue,
     required this.waveColor,
+    this.renderBox,
   });
 
   final GlobalKey textKey;
   final double waveValue;
   final double loadValue;
   final Color waveColor;
+  RenderBox? renderBox;
 
   @override
   void paint(Canvas canvas, Size size) {
     const kWaveMultiply = 20.0;
     final textBox = textKey.currentContext?.findRenderObject() as RenderBox?;
-    if (textBox == null) {
+    if (textBox == null || renderBox == null) {
       return;
     }
-    final width = size.width;
-    final height = size.height;
+    final textWidth = textBox.size.width;
     final textHeight = textBox.size.height;
-    final baseHeight = height / 2 + textHeight / 2 - loadValue * textHeight;
-    final path = Path();
-    for (var i = 0.0; i < width; ++i) {
+    final textOffset = textBox.localToGlobal(renderBox?.globalToLocal(Offset.zero) ?? Offset.zero);
+    final x = textOffset.dx - textWidth * 0.0;
+    final y = textOffset.dy - textHeight * 0.0;
+    final width = textWidth + textWidth * 0.0;
+    final height = textHeight + textHeight * 0.0;
+    final baseHeight = size.height / 2 + textHeight / 2 - loadValue * textHeight;
+    final path = Path()..moveTo(x, y);
+    for (var i = x; i < x + width; ++i) {
       path.lineTo(i, baseHeight + math.sin(2 * math.pi * (i / width + waveValue)) * kWaveMultiply);
     }
     path
-      ..lineTo(width, height)
-      ..lineTo(0, height)
+      ..lineTo(x + width, y + height)
+      ..lineTo(x, y + height)
       ..close();
 
     final wavePaint = Paint()..color = waveColor;

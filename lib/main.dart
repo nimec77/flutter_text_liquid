@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_text_liquid/asset_to_image.dart';
 import 'package:flutter_text_liquid/text_liquid_fill.dart';
 
 void main() {
@@ -19,9 +18,9 @@ class MyApp extends StatelessWidget {
       home: const Scaffold(
         body: Center(
           child: SizedBox(
-            width: 600,
-            height: 450,
-            child: AssetToImage(),
+            width: double.infinity,
+            height: double.infinity,
+            child: TextLiquidFill(text: 'LOADING...'),
           ),
         ),
       ),
